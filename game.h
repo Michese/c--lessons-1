@@ -35,7 +35,7 @@ namespace game
                 }
             }
             system("cls");
-            
+
             if (currentPlayer)
             {
                 player1.getBoard()->render();

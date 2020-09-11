@@ -14,7 +14,6 @@ namespace player
         string name;
 
     public:
-
         Player(const string name, const char (&array)[ROWS][COLUMNS])
         {
             this->name = name;
