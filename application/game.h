@@ -1,24 +1,20 @@
-#include "config.h"
-#include "player.h"
-
-namespace game
+namespace application
 {
-    using namespace std;
-    using namespace player;
-
     class Game
     {
-
     public:
         void start()
         {
             Player player1(NAME_PLAYER_1, BOARD_PLAYER_2);
             Player player2(NAME_PLAYER_2, BOARD_PLAYER_1);
+
             bool currentPlayer = true;
             bool win = false;
+
             while (!win)
             {
                 system("cls");
+
                 if (currentPlayer)
                 {
                     cout << player1.getName() << endl;
@@ -34,6 +30,7 @@ namespace game
                     win = player2.isWin();
                 }
             }
+
             system("cls");
 
             if (currentPlayer)
@@ -46,7 +43,8 @@ namespace game
                 player2.getBoard()->render();
                 cout << player1.getName() << ", you is win!\nCongratulation!" << endl;
             }
+
             system("pause");
         }
     };
-} // namespace game
+} // namespace application

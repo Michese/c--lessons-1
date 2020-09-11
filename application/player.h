@@ -1,10 +1,5 @@
-#include "board.h"
-
-namespace player
+namespace application
 {
-    using namespace std;
-    using namespace board;
-
     class Player
     {
     private:
@@ -19,6 +14,7 @@ namespace player
             this->name = name;
             this->board = new Board();
             this->score = 0;
+
             for (int i = 0; i < ROWS; i++)
             {
                 for (int j = 0; j < COLUMNS; j++)
@@ -27,15 +23,18 @@ namespace player
                 }
             }
         }
+
         Board *getBoard()
         {
             return this->board;
         }
+
         bool shot()
         {
             bool result = true;
             int x, y;
             char z;
+
             try
             {
                 cout << "X-coordinate(number): ";
@@ -49,12 +48,12 @@ namespace player
                 cout << "incorrect values!" << endl;
                 system("PAUSE");
                 system("CLS");
+
                 cout << this->name << endl;
                 this->board->render();
                 this->shot();
             }
 
-            cout << x << ' ' << y << endl;
             if (this->enemyBoard[y][x] == SHIP)
             {
                 this->board->mark(x, y, SHIP);
@@ -66,6 +65,7 @@ namespace player
                 this->board->mark(x, y, MISS);
                 result = false;
             }
+
             return result;
         }
 
@@ -74,14 +74,17 @@ namespace player
             z = toupper(z);
             y = (int)(z - 'A');
             --x;
+
             if (x >= COLUMNS || x < 0 || y >= ROWS || y < 0)
             {
                 throw "incorrect values";
             }
         }
+
         bool isWin()
         {
             bool result;
+
             if (this->score == SCORE_FOR_WIN)
             {
                 result = true;
@@ -90,6 +93,7 @@ namespace player
             {
                 result = false;
             }
+
             return result;
         }
 
@@ -99,4 +103,4 @@ namespace player
         }
     };
 
-} // namespace player
+} // namespace application

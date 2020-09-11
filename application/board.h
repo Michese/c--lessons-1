@@ -1,7 +1,5 @@
-namespace board
+namespace application
 {
-    using namespace std;
-
     class Board
     {
     private:
@@ -23,9 +21,11 @@ namespace board
         {
             this->board[y][x] = mark;
         }
+
         void render()
         {
             char alph = 'A';
+
             cout << endl;
             for (int i = 0; i <= ROWS; i++)
             {
@@ -60,7 +60,8 @@ namespace board
                 ++alph;
                 cout << endl;
             }
+
             cout << endl;
         }
     };
-} // namespace board
+} // namespace application
