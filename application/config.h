@@ -1,16 +1,22 @@
 #include <iostream>
-namespace application
+namespace application // используем пространство имен application
 {
+    // Включаем пространство имен std в область видимости
+    // пространста имён application
     using namespace std;
-    
-    const unsigned short COLUMNS = 9;
-    const unsigned short ROWS = 9;
-    const unsigned short SCORE_FOR_WIN = 3;
-    const unsigned short MAX_ADD_SHIP = 1;
-    const char SHIP = 'X';
-    const char MISS = '*';
 
-    const std::string NAME_PLAYER_1 = "First player";
+    const unsigned short COLUMNS = 9;       // количество столбцов поля
+    const unsigned short ROWS = 9;          // количество строк поля
+    const unsigned short SCORE_FOR_WIN = 5; // количество очков, необходимое для победы
+    const unsigned short MAX_ADD_SHIP = 3;  // максимальное количество добавляемых кораблей
+    const char SHIP = 'X';                  // символ корабля
+    const char MISS = '*';                  // символ промаха
+    const char EMPTY = '0';                 // символ тумана войны/ пустое значение
+
+    const string NAME_PLAYER_1 = "First player"; // имя игрока #1
+    // стандартное поле игрока #1 со всеми кораблями
+    // const unsigned short ROWS - количество строк поля,
+    // const unsigned short COLUMNS - количество столбцов поля
     const char BOARD_PLAYER_1[ROWS][COLUMNS] = {
         {'0', '0', '0', '0', '0', '0', '0', '0', '0'},
         {'0', 'X', 'X', 'X', 'X', 'X', '0', '0', '0'},
@@ -22,7 +28,10 @@ namespace application
         {'0', '0', '0', '0', 'X', 'X', 'X', 'X', 'X'},
         {'0', '0', '0', '0', '0', '0', '0', '0', '0'}};
 
-    const std::string NAME_PLAYER_2 = "Second player";
+    const string NAME_PLAYER_2 = "Second player"; // имя игрока #2
+    // стандартное поле игрока #2 со всеми кораблями
+    // const unsigned short ROWS - количество строк поля,
+    // const unsigned short COLUMNS - количество столбцов поля
     const char BOARD_PLAYER_2[ROWS][COLUMNS] = {
         {'X', '0', '0', '0', '0', 'X', 'X', 'X', '0'},
         {'X', '0', '0', '0', '0', '0', '0', '0', '0'},

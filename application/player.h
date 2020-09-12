@@ -1,14 +1,18 @@
-namespace application
+namespace application // используем пространство имен application
 {
+    // создаем класс Player
     class Player
     {
-    private:
-        Board *board;
-        Board *enemyBoard;
-        unsigned short score;
-        string name;
+    private:                  // спецификатор доступа private
+        Board *board;         // Экземпляр класса Board с пометками игрока
+        Board *enemyBoard;    // Экземпляр класса Board с полем вражеского игрока со всеми его кораблями
+        unsigned short score; // Количество уничтоженных игроком кораблей
+        string name;          // имя игрока
 
-    public:
+    public: // спецификатор доступа public
+            // конструктор класса с двуми аргументами:
+            // const string name - имя игрока (в config.h)
+            // const char array[ROWS][COLUMNS] - массив с полем вражеского игрока со всеми его кораблями (в config.h)
         Player(const string &name, const char (&array)[ROWS][COLUMNS])
         {
             this->name = name;
@@ -17,6 +21,12 @@ namespace application
             this->enemyBoard = new Board(array);
         }
 
+        // метод с одним аргументом:
+        // Player enemyPlayer - экземпляр класса вражеского игрока.
+        // Игроки добавляют на свое поле дополнительные корабли,
+        // вводя соответствующие координаты игрового поля.
+        // Их количество можно регулировать с помощью константы
+        // const unsigned short MAX_ADD_SHIP (в config.h)
         void setEnemyBoard(Player &enemyPlayer)
         {
             unsigned short countShip = MAX_ADD_SHIP,
@@ -51,11 +61,30 @@ namespace application
             system("pause");
         }
 
+        // геттер, возвращающий имя игрока.
+        string getName()
+        {
+            return this->name;
+        }
+
+        // геттер, возвращающий указатель на экземпляр класса Board
+        // с полем вражеского игрока со всеми его кораблями
+        Board *getEnemyBoard()
+        {
+            return this->enemyBoard;
+        }
+
+        // геттер, возвращающий указатель на экземпляр класса Board с пометками игрока
         Board *getBoard()
         {
             return this->board;
         }
 
+        // метод без аргументов.
+        // Игрок вводит координаты выстрела и помечает
+        // результат этого выстрела на игровом поле.
+        // Возвращает true в случае попадания по вражескому кораблю,
+        // false - в случае промаха.
         bool shot()
         {
             bool result = true;
@@ -64,6 +93,8 @@ namespace application
 
             try
             {
+                cout << this->name << endl;
+                this->board->render();
                 cout << "Shot to enemy ship!" << endl;
                 cout << "Y-coordinate(symbol): ";
                 cin >> z;
@@ -89,14 +120,20 @@ namespace application
                 system("PAUSE");
                 system("CLS");
 
-                cout << this->name << endl;
-                this->board->render();
                 this->shot();
             }
 
             return result;
         }
 
+        // метод без аргументов.
+        // Проверяет, набрал ли игрок достаточное
+        // количество очков для победы или нет.
+        // const unsigned short SCORE_FOR_WIN (в config.h) -
+        // количество очков, необходимое для победы.
+        // Возвращает true в том случае, если очков
+        // для победы оказалось достаточно,
+        // false - в обратном случае.
         bool isWin()
         {
             bool result;
@@ -111,11 +148,6 @@ namespace application
             }
 
             return result;
-        }
-
-        string getName()
-        {
-            return this->name;
         }
     };
 
