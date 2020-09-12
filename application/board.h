@@ -17,8 +17,23 @@ namespace application
             }
         }
 
-        void mark(int &x, int &y, const char &mark)
+        Board(const char (&array)[ROWS][COLUMNS])
         {
+            for (int i = 0; i < ROWS; i++)
+            {
+                for (int j = 0; j < COLUMNS; j++)
+                {
+                    this->board[i][j] = array[i][j];
+                }
+            }
+        }
+
+        void mark(unsigned short &x, unsigned short &y, const char &mark)
+        {
+            if (mark == SHIP && this->getCeil(x, y) == SHIP)
+            {
+                throw "there's already a ship here";
+            }
             this->board[y][x] = mark;
         }
 
@@ -27,7 +42,7 @@ namespace application
             char alph = 'A';
 
             cout << endl;
-            for (int i = 0; i <= ROWS; i++)
+            for (int i = 0; i <= COLUMNS; i++)
             {
                 if (i == 0)
                 {
@@ -43,7 +58,7 @@ namespace application
 
             cout << endl;
 
-            for (int i = 0; i <= ROWS; i++)
+            for (int i = 0; i <= COLUMNS; i++)
             {
                 cout << "__";
             }
@@ -62,6 +77,39 @@ namespace application
             }
 
             cout << endl;
+        }
+
+        char getCeil(unsigned short &x, unsigned short &y)
+        {
+            return this->board[y][x];
+        }
+
+        unsigned short countScore()
+        {
+            unsigned short score = 0;
+            for (int i = 0; i < ROWS; i++)
+            {
+                for (int j = 0; j < COLUMNS; j++)
+                {
+                    if (this->board[i][j] == SHIP)
+                    {
+                        score++;
+                    }
+                }
+            }
+            return score;
+        }
+
+        static void preparePoint(unsigned short &x, unsigned short &y, char &z)
+        {
+            z = toupper(z);
+            y = (int)(z - 'A');
+            --x;
+
+            if (x >= COLUMNS || x < 0 || y >= ROWS || y < 0)
+            {
+                throw "incorrect values";
+            }
         }
     };
 } // namespace application

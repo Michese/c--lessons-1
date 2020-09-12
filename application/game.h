@@ -11,6 +11,9 @@ namespace application
             bool currentPlayer = true;
             bool win = false;
 
+            player1.setEnemyBoard(player2);
+            player2.setEnemyBoard(player1);
+            
             while (!win)
             {
                 system("cls");

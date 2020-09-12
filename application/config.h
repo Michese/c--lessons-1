@@ -6,6 +6,7 @@ namespace application
     const unsigned short COLUMNS = 9;
     const unsigned short ROWS = 9;
     const unsigned short SCORE_FOR_WIN = 3;
+    const unsigned short MAX_ADD_SHIP = 1;
     const char SHIP = 'X';
     const char MISS = '*';
 
