@@ -1,33 +1,35 @@
-#include "matrix.h"
+#include "functions/sine.h"
+#include <random>
+#include <ctime>
+using namespace functions;
+using namespace functions_base;
 
 int main()
 {
-    Matrix matr1(3, 2);
-    matr1.set(4.0, 0, 0);
-    matr1.set(2.0, 0, 1);
-    matr1.set(3.0, 1, 0);
-    matr1.set(1.0, 1, 1);
-    matr1.set(1.0, 2, 0);
-    matr1.set(1.0, 2, 1);
-    matr1.print();
+    srand(time(NULL));
+    int size = rand() % 10 + 1;
+    BaseFunction **array = new BaseFunction *[size];
+    for (int row = 0; row < size; row++)
+    {
+        if (rand() % 2 == 1)
+        {
+            array[row] = new Sine();
+        }
+        else
+        {
+            array[row] = new Exponent();
+        }
+    }
+    
+    
 
-    cout << endl;
 
-    Matrix matr2(3,3);
-    matr2.set(5.0, 0, 0);
-    matr2.set(2.0, 0, 1);
-    matr2.set(2.0, 0, 2);
-    matr2.set(3.0, 1, 0);
-    matr2.set(1.0, 1, 1);
-    matr2.set(1.0, 1, 2);
-    matr2.set(1.0, 2, 0);
-    matr2.set(1.0, 2, 1);
-    matr2.set(0.0, 2, 2);
-    matr2.print();
 
-    cout << endl;
+    for (int row = 0; row < size; row++)
+    {
+        delete[] array[row];
+    }
+    delete[] array;
 
-    Matrix matr3;
-    matr3 = matr1 + matr2;
-    matr3.print();
+    return 0;
 }
