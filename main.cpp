@@ -2,33 +2,32 @@
 
 int main()
 {
-    vector<vector<double>>arr(3, vector<double>(3));
-    arr[0][0] = 225.12922222;
-    arr[0][2] = 225.12922222;
-    Matrix matr(arr);
-    matr.print();
-    // double **matrix = new double *[5];
-    // for (int row = 0; row < 5; row++)
-    //     matrix[row] = new double[5];
+    Matrix matr1(3, 3);
+    matr1.set(3.3, 0, 1);
+    matr1.set(3.3, 0, 2);
+    matr1.set(3.4, 2, 1);
+    matr1.print();
 
-    // for (int row = 0; row < 5; row++)
-    // {
-    //     for (int column = 0; column < 5; column++)
-    //     {
-    //         matrix[row][column] = 3.1;
-    //     }
-    // }
+    cout << endl;
 
-    //     for (int row = 0; row < 5; row++)
-    // {
-    //     for (int column = 0; column < 5; column++)
-    //     {
-    //         cout << matrix[row][column] << ' ';
-    //     }
-    //     cout << endl;
-    // }
+    Matrix matr2(matr1);
+    matr2.set(0.23, 1, 0);
+    matr2.print();
 
-    // for (int count = 0; count < 5; count++)
-    //     delete[] matrix[count];
-    // delete[] matrix;
+    cout << endl;
+
+    Matrix matr3(3, 3);
+    matr3.print();
+
+    cout << endl;
+
+    matr3 = matr1/4.4;
+    matr3.print();
+
+    cout << endl;
+
+    Matrix matr4;
+    double num = 3.3;
+    matr4 = matr1/num;
+    matr4.print();
 }

@@ -9,23 +9,19 @@ class Matrix
 protected:
     int currentColumns;
     int currentRows;
-    static const int COLUMNS = 5;
-    static const int ROWS = 5;
+    static const int DEFAULT_COLUMNS = 5;
+    static const int DEFAULT_ROWS = 5;
+    static const double DEFAULT_VALUES;
 
 public:
-    double **matrix;
-    Matrix()
-    {
-        int columns = Matrix::COLUMNS;
-        int rows = Matrix::ROWS;
-        Matrix(rows, columns);
-    }
+    double** matrix;
+
     Matrix(int rows, int columns)
     {
         this->currentColumns = columns;
         this->currentRows = rows;
 
-        this->matrix = new double *[this->currentRows];
+        this->matrix = new double* [this->currentRows];
         for (int row = 0; row < this->currentRows; row++)
             this->matrix[row] = new double[this->currentColumns];
 
@@ -33,7 +29,47 @@ public:
         {
             for (int column = 0; column < this->currentColumns; column++)
             {
-                Matrix::set(0.1, row, column);
+                this->set(0.0, row, column);
+            }
+        }
+    }
+    Matrix()
+    {
+        int columns = Matrix::DEFAULT_COLUMNS;
+        int rows = Matrix::DEFAULT_ROWS;
+        Matrix(rows, columns);
+    }
+    Matrix(Matrix& otherMatrix)
+    {
+        this->currentColumns = otherMatrix.getCurrentColumns();
+        this->currentRows = otherMatrix.getCurrentRows();
+
+        this->matrix = new double* [this->currentRows];
+        for (int row = 0; row < this->currentRows; row++)
+            this->matrix[row] = new double[this->currentColumns];
+
+        for (int row = 0; row < this->currentRows; row++)
+        {
+            for (int column = 0; column < this->currentColumns; column++)
+            {
+                Matrix::set(otherMatrix.get(row, column), row, column);
+            }
+        }
+    }
+    Matrix(double** matrix, int rows, int columns)
+    {
+        this->currentColumns = columns;
+        this->currentRows = rows;
+
+        this->matrix = new double* [this->currentRows];
+        for (int row = 0; row < this->currentRows; row++)
+            this->matrix[row] = new double[this->currentColumns];
+
+        for (int row = 0; row < this->currentRows; row++)
+        {
+            for (int column = 0; column < this->currentColumns; column++)
+            {
+                Matrix::set(matrix[row][column], row, column);
             }
         }
     }
@@ -44,7 +80,7 @@ public:
             this->currentColumns = matrix.size();
             this->currentRows = matrix[0].size();
 
-            this->matrix = new double *[this->currentRows];
+            this->matrix = new double* [this->currentRows];
             for (int row = 0; row < this->currentRows; row++)
                 this->matrix[row] = new double[this->currentColumns];
 
@@ -66,9 +102,57 @@ public:
     ~Matrix()
     {
         for (int count = 0; count < this->currentRows; count++)
-            delete[](matrix[count]);
-        delete[](matrix);
+            free(this->matrix[count]);
+        free(this->matrix);
     }
+    Matrix operator=(Matrix &otherMatrix)
+    {
+        for (int count = 0; count < this->currentRows; count++)
+            delete[](this->matrix[count]);
+        delete[](this->matrix);
+
+        this->currentColumns = otherMatrix.getCurrentColumns();
+        this->currentRows = otherMatrix.getCurrentRows();
+
+        this->matrix = new double* [this->currentRows];
+        for (int row = 0; row < this->currentRows; row++)
+            this->matrix[row] = new double[this->currentColumns];
+
+        for (int row = 0; row < this->currentRows; row++)
+        {
+            for (int column = 0; column < this->currentColumns; column++)
+            {
+                Matrix::set(otherMatrix.get(row, column), row, column);
+            }
+        }
+        return *this;
+    }
+    Matrix operator=(const Matrix &otherMatrix)
+    {
+        for (int count = 0; count < this->currentRows; count++)
+            free(this->matrix[count]);
+        free(this->matrix);
+
+        this->currentColumns = otherMatrix.currentColumns;
+        this->currentRows = otherMatrix.currentRows;
+
+        this->matrix = new double* [this->currentRows];
+        for (int row = 0; row < this->currentRows; row++)
+            this->matrix[row] = new double[this->currentColumns];
+
+        for (int row = 0; row < this->currentRows; row++)
+        {
+            for (int column = 0; column < this->currentColumns; column++)
+            {
+                Matrix::set(otherMatrix.matrix[row][column], row, column);
+            }
+        }
+        return *this;
+    }
+    friend Matrix operator/(Matrix& otherMatrix, double number);
+    // Matrix operator/(int number) {
+    //     return this->operator/((double)number);
+    // }
     double get(int row, int column)
     {
         double result;
@@ -82,6 +166,14 @@ public:
             result = 0.0;
         }
         return result;
+    }
+    int getCurrentRows()
+    {
+        return this->currentRows;
+    }
+    int getCurrentColumns()
+    {
+        return this->currentColumns;
     }
     bool set(double value, int row, int column)
     {
@@ -111,3 +203,28 @@ public:
         }
     }
 };
+
+const double Matrix::DEFAULT_VALUES = 0.0;
+Matrix operator/(Matrix& otherMatrix, double number)
+{
+    int rows = otherMatrix.getCurrentRows();
+    int columns = otherMatrix.getCurrentColumns();
+
+    double** newArray = new double* [rows];
+    for (int row = 0; row < rows; row++)
+    {
+        newArray[row] = new double[columns];
+    }
+
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int column = 0; column < columns; column++)
+        {
+            newArray[row][column] = otherMatrix.get(row, column) / number;
+        }
+    }
+
+    Matrix* newMatrix = new Matrix(newArray, rows, columns);
+    return *newMatrix;
+}
