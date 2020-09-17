@@ -9,19 +9,19 @@ class Matrix
 protected:
     int currentColumns;
     int currentRows;
+    double **matrix;
+
     static const int DEFAULT_COLUMNS = 5;
     static const int DEFAULT_ROWS = 5;
     static const double DEFAULT_VALUES;
 
 public:
-    double** matrix;
-
     Matrix(int rows, int columns)
     {
         this->currentColumns = columns;
         this->currentRows = rows;
 
-        this->matrix = new double* [this->currentRows];
+        this->matrix = new double *[this->currentRows];
         for (int row = 0; row < this->currentRows; row++)
             this->matrix[row] = new double[this->currentColumns];
 
@@ -35,16 +35,27 @@ public:
     }
     Matrix()
     {
-        int columns = Matrix::DEFAULT_COLUMNS;
-        int rows = Matrix::DEFAULT_ROWS;
-        Matrix(rows, columns);
+        this->currentColumns = Matrix::DEFAULT_COLUMNS;
+        this->currentRows = Matrix::DEFAULT_ROWS;
+
+        this->matrix = new double *[this->currentRows];
+        for (int row = 0; row < this->currentRows; row++)
+            this->matrix[row] = new double[this->currentColumns];
+
+        for (int row = 0; row < this->currentRows; row++)
+        {
+            for (int column = 0; column < this->currentColumns; column++)
+            {
+                this->set(0.0, row, column);
+            }
+        }
     }
-    Matrix(Matrix& otherMatrix)
+    Matrix(Matrix &otherMatrix)
     {
         this->currentColumns = otherMatrix.getCurrentColumns();
         this->currentRows = otherMatrix.getCurrentRows();
 
-        this->matrix = new double* [this->currentRows];
+        this->matrix = new double *[this->currentRows];
         for (int row = 0; row < this->currentRows; row++)
             this->matrix[row] = new double[this->currentColumns];
 
@@ -56,12 +67,12 @@ public:
             }
         }
     }
-    Matrix(double** matrix, int rows, int columns)
+    Matrix(double **matrix, int rows, int columns)
     {
         this->currentColumns = columns;
         this->currentRows = rows;
 
-        this->matrix = new double* [this->currentRows];
+        this->matrix = new double *[this->currentRows];
         for (int row = 0; row < this->currentRows; row++)
             this->matrix[row] = new double[this->currentColumns];
 
@@ -80,7 +91,7 @@ public:
             this->currentColumns = matrix.size();
             this->currentRows = matrix[0].size();
 
-            this->matrix = new double* [this->currentRows];
+            this->matrix = new double *[this->currentRows];
             for (int row = 0; row < this->currentRows; row++)
                 this->matrix[row] = new double[this->currentColumns];
 
@@ -105,6 +116,10 @@ public:
             free(this->matrix[count]);
         free(this->matrix);
     }
+    double *operator[](const int row)
+    {
+        return this->matrix[row];
+    }
     Matrix operator=(Matrix &otherMatrix)
     {
         for (int count = 0; count < this->currentRows; count++)
@@ -114,7 +129,7 @@ public:
         this->currentColumns = otherMatrix.getCurrentColumns();
         this->currentRows = otherMatrix.getCurrentRows();
 
-        this->matrix = new double* [this->currentRows];
+        this->matrix = new double *[this->currentRows];
         for (int row = 0; row < this->currentRows; row++)
             this->matrix[row] = new double[this->currentColumns];
 
@@ -127,44 +142,28 @@ public:
         }
         return *this;
     }
-    Matrix operator=(const Matrix &otherMatrix)
-    {
-        for (int count = 0; count < this->currentRows; count++)
-            free(this->matrix[count]);
-        free(this->matrix);
-
-        this->currentColumns = otherMatrix.currentColumns;
-        this->currentRows = otherMatrix.currentRows;
-
-        this->matrix = new double* [this->currentRows];
-        for (int row = 0; row < this->currentRows; row++)
-            this->matrix[row] = new double[this->currentColumns];
-
-        for (int row = 0; row < this->currentRows; row++)
-        {
-            for (int column = 0; column < this->currentColumns; column++)
-            {
-                Matrix::set(otherMatrix.matrix[row][column], row, column);
-            }
-        }
-        return *this;
-    }
-    friend Matrix operator/(Matrix& otherMatrix, double number);
-    // Matrix operator/(int number) {
-    //     return this->operator/((double)number);
-    // }
+    friend Matrix &operator/(Matrix &otherMatrix, double number);
+    friend Matrix &operator+(Matrix &otherMatrix, double number);
+    friend Matrix &operator+(Matrix &firstMatrix, Matrix &secondMatrix);
+    friend Matrix &operator-(Matrix &firstMatrix, Matrix &secondMatrix);
+    friend Matrix &operator*(Matrix &firstMatrix, Matrix &secondMatrix);
+    friend Matrix &operator*(Matrix &otherMatrix, double number);
     double get(int row, int column)
     {
         double result;
         try
         {
+            if (row >= this->currentRows || row < 0 || column >= this->currentColumns || column < 0)
+            {
+                throw "Error. Array element not found";
+            }
             result = this->matrix[row][column];
         }
         catch (...)
         {
-            cout << "Error. Matrix[" << row << "][" << column << "] not found!" << endl;
             result = 0.0;
         }
+
         return result;
     }
     int getCurrentRows()
@@ -205,17 +204,17 @@ public:
 };
 
 const double Matrix::DEFAULT_VALUES = 0.0;
-Matrix operator/(Matrix& otherMatrix, double number)
+
+Matrix &operator/(Matrix &otherMatrix, double number)
 {
     int rows = otherMatrix.getCurrentRows();
     int columns = otherMatrix.getCurrentColumns();
 
-    double** newArray = new double* [rows];
+    double **newArray = new double *[rows];
     for (int row = 0; row < rows; row++)
     {
         newArray[row] = new double[columns];
     }
-
 
     for (int row = 0; row < rows; row++)
     {
@@ -225,6 +224,158 @@ Matrix operator/(Matrix& otherMatrix, double number)
         }
     }
 
-    Matrix* newMatrix = new Matrix(newArray, rows, columns);
+    Matrix *newMatrix = new Matrix(newArray, rows, columns);
+    for (int row = 0; row < rows; row++)
+        delete[] newArray[row];
+    delete[] newArray;
+    return *newMatrix;
+}
+
+Matrix &operator+(Matrix &otherMatrix, double number)
+{
+    int rows = otherMatrix.getCurrentRows();
+    int columns = otherMatrix.getCurrentColumns();
+
+    double **newArray = new double *[rows];
+    for (int row = 0; row < rows; row++)
+    {
+        newArray[row] = new double[columns];
+    }
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int column = 0; column < columns; column++)
+        {
+            newArray[row][column] = otherMatrix.get(row, column) + number;
+        }
+    }
+
+    Matrix *newMatrix = new Matrix(newArray, rows, columns);
+    for (int row = 0; row < rows; row++)
+        delete[] newArray[row];
+    delete[] newArray;
+    return *newMatrix;
+}
+
+Matrix &operator+(Matrix &firstMatrix, Matrix &secondMatrix)
+{
+    int rows = (firstMatrix.getCurrentRows() > secondMatrix.getCurrentRows()) ? firstMatrix.getCurrentRows() : secondMatrix.getCurrentRows();
+    int columns = (firstMatrix.getCurrentColumns() > secondMatrix.getCurrentColumns()) ? firstMatrix.getCurrentColumns() : secondMatrix.getCurrentColumns();
+
+    double **newArray = new double *[rows];
+    for (int row = 0; row < rows; row++)
+    {
+        newArray[row] = new double[columns];
+    }
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int column = 0; column < columns; column++)
+        {
+            newArray[row][column] = firstMatrix.get(row, column) + secondMatrix.get(row, column);
+        }
+    }
+
+    Matrix *newMatrix = new Matrix(newArray, rows, columns);
+    for (int row = 0; row < rows; row++)
+        delete[] newArray[row];
+    delete[] newArray;
+
+    return *newMatrix;
+}
+
+Matrix &operator-(Matrix &firstMatrix, Matrix &secondMatrix)
+{
+    int rows = (firstMatrix.getCurrentRows() > secondMatrix.getCurrentRows()) ? firstMatrix.getCurrentRows() : secondMatrix.getCurrentRows();
+    int columns = (firstMatrix.getCurrentColumns() > secondMatrix.getCurrentColumns()) ? firstMatrix.getCurrentColumns() : secondMatrix.getCurrentColumns();
+
+    double **newArray = new double *[rows];
+    for (int row = 0; row < rows; row++)
+    {
+        newArray[row] = new double[columns];
+    }
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int column = 0; column < columns; column++)
+        {
+            if (firstMatrix.get(row, column) == 0 && secondMatrix.get(row, column) == 0)
+            {
+                newArray[row][column] = 0.0;
+            }
+            else
+            {
+                newArray[row][column] = firstMatrix.get(row, column) - secondMatrix.get(row, column);
+            }
+        }
+    }
+
+    Matrix *newMatrix = new Matrix(newArray, rows, columns);
+    for (int row = 0; row < rows; row++)
+        delete[] newArray[row];
+    delete[] newArray;
+
+    return *newMatrix;
+}
+
+Matrix &operator*(Matrix &firstMatrix, Matrix &secondMatrix)
+{
+    if (firstMatrix.getCurrentColumns() != secondMatrix.getCurrentRows() || firstMatrix.getCurrentRows() != secondMatrix.getCurrentColumns())
+    {
+        Matrix *newMatrix = new Matrix();
+        return *newMatrix;
+    }
+    int rows = firstMatrix.getCurrentRows();
+    int columns = firstMatrix.getCurrentRows();
+
+    double **newArray = new double *[rows];
+    for (int row = 0; row < rows; row++)
+    {
+        newArray[row] = new double[columns];
+    }
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int column = 0; column < columns; column++)
+        {
+            newArray[row][column] = 0.0;
+            for (int index = 0; index < firstMatrix.getCurrentColumns(); index++)
+            {
+                newArray[row][column] += firstMatrix.get(row, index) * secondMatrix.get(index, column);
+            }
+        }
+    }
+
+    Matrix *newMatrix = new Matrix(newArray, rows, columns);
+    for (int row = 0; row < rows; row++)
+        delete[] newArray[row];
+    delete[] newArray;
+
+    return *newMatrix;
+}
+
+Matrix &operator*(Matrix &otherMatrix, double number)
+{
+    int rows = otherMatrix.getCurrentRows();
+    int columns = otherMatrix.getCurrentColumns();
+
+    double **newArray = new double *[rows];
+    for (int row = 0; row < rows; row++)
+    {
+        newArray[row] = new double[columns];
+    }
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int column = 0; column < columns; column++)
+        {
+            newArray[row][column] = otherMatrix.get(row, column) * number;
+        }
+    }
+
+    Matrix *newMatrix = new Matrix(newArray, rows, columns);
+    for (int row = 0; row < rows; row++)
+        delete[] newArray[row];
+    delete[] newArray;
     return *newMatrix;
 }
