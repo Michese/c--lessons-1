@@ -5,8 +5,18 @@ namespace functions_base
     class BaseFunction
     {
     public:
-        virtual void setParams(int a, int b, int x) = 0;
-        virtual void setParams(int params[3]) = 0;
+        void setParams(int a, int b, int x)
+        {
+            this->a = a;
+            this->b = b;
+            this->x = x;
+        }
+        void setParams(int params[3])
+        {
+            this->a = params[0];
+            this->b = params[1];
+            this->x = params[2];
+        }
         virtual int getResult() = 0;
         virtual void print() = 0;
 
