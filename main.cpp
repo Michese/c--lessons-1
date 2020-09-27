@@ -180,30 +180,7 @@ public:
 };
 
 // Описание дружеского метода перегрузки оператора деления матрицы на целое число.
-Matrix &operator/(Matrix &other, int number)
-{
-    int **newArray = new int *[other.rows];
-    for (int row = 0; row < other.rows; row++)
-    {
-        newArray[row] = new int[other.columns];
-    }
 
-    for (int row = 0; row < other.rows; row++)
-    {
-        for (int column = 0; column < other.columns; column++)
-        {
-            newArray[row][column] = other.getCeil(row, column) / number;
-        }
-    }
-
-    Matrix *newMatrix = new Matrix(newArray, other.rows, other.columns);
-    for (int row = 0; row < other.rows; row++)
-    {
-        delete[] newArray[row];
-    }
-    delete[] newArray;
-    return *newMatrix;
-}
 
 
 int main()
