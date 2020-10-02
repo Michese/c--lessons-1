@@ -4,6 +4,7 @@
         "vector": "cpp",
         "iostream": "cpp",
         "xutility": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "iomanip": "cpp"
     }
 }

@@ -9,7 +9,7 @@ using namespace std;
 class Matrix
 {
     /*
- private - поля и методы, объявленные под ним могут быть 
+ private - поля и методы, объявленные под ним могут быть
  использованы только внутри класса.
  */
 private:
@@ -21,16 +21,16 @@ private:
      двумерный динамически выделенный массив.
      Он хранит в себе значения матрицы.
     */
-    int **array;
+    int** array;
 
     /*
- public - поля и методы, объявленные под ним могут быть 
+ public - поля и методы, объявленные под ним могут быть
  использованы как внутри, так и вне класса.
  */
 public:
     /*
  Объявление и описание конструктора класса по умолчанию
- (без переданных аргументов). Вызывается, когда создаем 
+ (без переданных аргументов). Вызывается, когда создаем
  экземпляр класса без указания конкретных параметров.
  */
     Matrix()
@@ -38,7 +38,7 @@ public:
         columns = 3;
         rows = 3;
 
-        array = new int *[rows];
+        array = new int* [rows];
         for (int row = 0; row < rows; row++)
         {
             array[row] = new int[columns];
@@ -54,16 +54,16 @@ public:
     }
 
     /*
- Объявление и описание конструктора копирования. 
+ Объявление и описание конструктора копирования.
  Этт метод создёт экземпляр класса с такими же полями,
  что и у копируемого объекта other без побитового копирования.
  */
-    Matrix(Matrix &other)
+    Matrix(Matrix& other)
     {
         columns = other.columns;
         rows = other.rows;
 
-        array = new int *[rows];
+        array = new int* [rows];
         for (int row = 0; row < rows; row++)
         {
             array[row] = new int[columns];
@@ -81,16 +81,16 @@ public:
     /*
  Объявление и описание конструктора класса, в котором
  переданы 3 аргумента: newRows - количество строк в матрице,
- newColumns - количество колонок в матрице, а newArray - 
+ newColumns - количество колонок в матрице, а newArray -
  динамически выделенный массив, значения которого будем
  передавать в новую матрицу.
  */
-    Matrix(int **newArray, int newRows, int newColumns)
+    Matrix(int** newArray, int newRows, int newColumns)
     {
         columns = newColumns;
         rows = newRows;
 
-        array = new int *[rows];
+        array = new int* [rows];
         for (int row = 0; row < rows; row++)
         {
             array[row] = new int[columns];
@@ -106,7 +106,7 @@ public:
     }
     /*
  Объявление и описание деструктора класса.
- Этот метод нужен для отчистки динамически выделенной 
+ Этот метод нужен для отчистки динамически выделенной
  внутри экземпляра класса памяти. В данном случае
  удаляет динамически выделенный двумерный массив
  array.
@@ -120,12 +120,12 @@ public:
         delete[] array;
     }
     /*
- объявление и описание метода перегрузки оператора присваивания. 
- Этот метод нужен для реализации присваивания полей экземпляра класса 
+ объявление и описание метода перегрузки оператора присваивания.
+ Этот метод нужен для реализации присваивания полей экземпляра класса
  справа от оператора присваивания другому подобному экземпляру слева
  без побитового копирования.
  */
-    Matrix operator=(Matrix &other)
+    Matrix operator=(Matrix& other)
     {
         for (int row = 0; row < rows; row++)
         {
@@ -136,7 +136,7 @@ public:
         columns = other.columns;
         rows = other.rows;
 
-        array = new int *[rows];
+        array = new int* [rows];
         for (int row = 0; row < rows; row++)
         {
             array[row] = new int[columns];
@@ -153,7 +153,7 @@ public:
     }
 
     // Объявление дружеского метода перегрузки оператора деления матрицы на целое число.
-    friend Matrix &operator/(Matrix &otherMatrix, int number);
+    friend Matrix& operator/(Matrix& otherMatrix, int number);
     /*
     Объявление и описание метода, который возвращает значение матрицы,
     где row - строка матрицы, а column - столбец матрицы.
@@ -180,7 +180,30 @@ public:
 };
 
 // Описание дружеского метода перегрузки оператора деления матрицы на целое число.
+Matrix& operator/(Matrix& other, int number)
+{
+    int** newArray = new int* [other.rows];
+    for (int row = 0; row < other.rows; row++)
+    {
+        newArray[row] = new int[other.columns];
+    }
 
+    for (int row = 0; row < other.rows; row++)
+    {
+        for (int column = 0; column < other.columns; column++)
+        {
+            newArray[row][column] = other.getCeil(row, column) / number;
+        }
+    }
+
+    Matrix* newMatrix = new Matrix(newArray, other.rows, other.columns);
+    for (int row = 0; row < other.rows; row++)
+    {
+        delete[] newArray[row];
+    }
+    delete[] newArray;
+    return *newMatrix;
+}
 
 
 int main()
@@ -188,7 +211,7 @@ int main()
     // для использования кириллицы в консоли
     setlocale(LC_ALL, "Russian");
     // для того, чтобы рандомные цифры не повторялись после перезапуска программы
-    srand(time(NULL)); 
+    srand(time(NULL));
 
     int rows, columns;
     cout << "Введите количество строк для матрицы A: ";
@@ -196,7 +219,7 @@ int main()
     cout << "Введите количество столбцов для матрицы A: ";
     cin >> columns;
 
-    int **newArray = new int*[rows];
+    int** newArray = new int* [rows];
     for (int row = 0; row < rows; row++)
     {
         newArray[row] = new int[columns];
@@ -204,7 +227,7 @@ int main()
         {
             newArray[row][column] = rand() % 1000 + 1;
         }
-        
+
     }
 
     Matrix A(newArray, rows, columns);
