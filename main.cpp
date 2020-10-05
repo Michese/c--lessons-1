@@ -1,42 +1,106 @@
-#include "functions/sine.h"
-#include <random>
+#include <vector>
 #include <ctime>
-using namespace functions;
-using namespace functions_base;
+#include <iostream>
+#include <cmath>
+using namespace std;
+class Function
+{
+protected:
+    int a, b, c, x;
+
+public:
+    int getNumber()
+    {
+        return rand() % 10 + 1;
+    }
+    virtual void setParams() = 0;
+    virtual int result() = 0;
+    virtual void print() = 0;
+};
+
+class logarithm : public Function
+{
+public:
+    void setParams() override
+    {
+        cout << "Введите значение параметров:" << endl;
+        cout << "a = ";
+        a = getNumber();
+
+        cout << "b = ";
+        b = getNumber();
+
+        cout << "c = ";
+        c = getNumber();
+
+        cout << "x = ";
+        c = getNumber();
+    }
+    int result() override
+    {
+        return a * log(b * x) + c;
+    }
+    void print() override
+    {
+        cout << a << " * lg ( " << b << " * " << x << " ) + " << c << " = " << result() << endl;
+    }
+};
+
+class Сosine : public Function
+{
+public:
+    int result() override
+    {
+        return a * sin(x * b) + c;
+    }
+    void print() override
+    {
+        cout << a << " * Cos ( " << b << " * " << x << " ) + " << c << " = " << result() << endl;
+    }
+    void setParams() override
+    {
+        cout << "Введите значение параметров:" << endl;
+        cout << "a = ";
+        a = getNumber();
+
+        cout << "b = ";
+        b = getNumber();
+
+        cout << "c = ";
+        c = getNumber();
+
+        cout << "x = ";
+        c = getNumber();
+    }
+};
 
 int main()
 {
     srand(time(NULL));
-    int size = rand() % 10 + 1;
-    int a, b, x;
-    BaseFunction **array = new BaseFunction *[size];
-    for (int row = 0; row < size; row++)
-    {
-        if (rand() % 2 == 1)
-        {
-            array[row] = new Sine();
-        }
-        else
-        {
-            array[row] = new Exponent();
-        }
+    cout << "Введите размерность вектор-функции: ";
+    int N = 0,number = 0;
+    cin >> N;
+    vector<Function> y(N);
+    Function *func;
+    bool isWin = true;
+    while (isWin) {
+    cout << "Введите номер функции, результаты которой хотите посчитать:" << endl;
+    cout << "1. a * cos ( b * x ) + c" << endl;
+    cout << "2. a * lg ( b * x ) + c" << endl;
+    cin >> number;
+    switch(number) {
+        case 1:
+        func = Cosine;
+        
+    }
     }
 
-    for (int row = 0; row < size; row++)
+    for (int i = 0; i < N; i++)
     {
-        a = rand() % 20 + 1;
-        b = rand() % 5;
-        x = rand() % 10;
-        array[row]->setParams(a, b, x);
-        cout << "a = " << a << ";\nb = " << b << ";\nx = " << x << ';' << endl;
-        array[row]->print();
+        y[i]
     }
+    
 
-    for (int row = 0; row < size; row++)
-    {
-        delete[] array[row];
-    }
-    delete[] array;
-
+    system("pause");
     return 0;
 }
