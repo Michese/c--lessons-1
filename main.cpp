@@ -10,13 +10,13 @@ class BaseFunction
     // Обявленные под этим спецификатором доступа поля и методы класса могут быть вызваны только внутри этого класса и классов - наследников
 protected:
     vector<double> a; // массив со всеми параметрами функции (a, b)
-    int countParams;  // количество параметров функции, кроме x
-    double x;         // переменная функции
+    int countParams;  // количество параметров функции
+    double x;         // скалярный аргумент вектор-функции
     // Обявленные под этим спецификатором доступа поля и методы класса могут быть вызваны как внутри класса, так и вне его
 public:
     // возвращает число, которое ввел пользователь. Если пользователь введет некорректное число,
     // в консоле появится ошибка и пользователь заного попытается ввести требующее число
-    double getNumber(char symbolOfNumber)
+    static double getNumber(char symbolOfNumber)
     {
         double result = 0.0;
         cout << "Введите значение параметра " << symbolOfNumber << ": ";
@@ -34,14 +34,14 @@ public:
     }
 
     // задает параметры всем переменным
-    void set()
+    void set(int x)
     {
         char symbolParam = 'a';
         for (int count = 0; count < countParams; count++, symbolParam++)
         {
-            a.push_back(getNumber(symbolParam));
+            this->a.push_back(getNumber(symbolParam));
         }
-        x = getNumber('x');
+        this->x = x;
     }
     // методы, реализованные в классах - наследниках
     virtual int getResult() = 0;
@@ -50,6 +50,7 @@ public:
 // объявление класса - наследника от BaseFunction
 class Exponent : public BaseFunction
 {
+    // Обявленные под этим спецификатором доступа поля и методы класса могут быть вызваны как внутри класса, так и вне его
 public:
     // конструктор по умолчанию
     Exponent()
@@ -70,6 +71,7 @@ public:
 // объявление класса - наследника от BaseFunction
 class Sine : public BaseFunction
 {
+    // Обявленные под этим спецификатором доступа поля и методы класса могут быть вызваны как внутри класса, так и вне его
 public:
     // конструктор по умолчанию
     Sine()
@@ -102,7 +104,7 @@ int main()
         numberFunc = 0;
         cout << "Введите число соответствующее номеру нужной Вам функции:" << endl;
         cout << "1) a * Sin ( b * x );" << endl;
-        cout << "2) a * exp^( b * x )." << endl;
+        cout << "2) a * e^( b * x )." << endl;
 
         cin >> numberFunc;
         if (numberFunc >= 1 && numberFunc <= 2) // условие выхода из цикла while
@@ -124,9 +126,10 @@ int main()
             vector[count] = new Exponent();
         }
     }
+    double x = BaseFunction::getNumber('x'); // задаем значение скалярного аргумента вектор-функции
     for (int count = 0; count < size; count++)
     {
-        vector[count]->set();   // задаем значения параметрам
+        vector[count]->set(x);   // задаем значения всем параметрам
         vector[count]->print(); // выводим результат функции в консоль
     }
     for (int count = 0; count < size; count++) // освобождаем динамически выделенную память
