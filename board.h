@@ -1,6 +1,0 @@
-class Board {
-private:
-
-public:
-
-};
