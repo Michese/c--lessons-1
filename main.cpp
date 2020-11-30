@@ -50,9 +50,9 @@ public:
                 throw "Количество колонок или строк больше возможного!";
             }
         }
-        catch (exception exp) {
-            cout << exp.what() << endl;
-            cerr << exp.what() << endl;
+        catch (const char* exp) {
+            cerr << exp << endl;
+            Matrix();
             return;
         }
 
@@ -125,11 +125,11 @@ public:
     {
         try {
             if (rows > Matrix::SIZE_LIMIT || columns > Matrix::SIZE_LIMIT) {
-                throw "Количество колонок или строк больше возможного!";
+                throw "Ошибка! Количество колонок или строк больше возможного!";
             }
         }
-        catch (exception exp) {
-            cerr << exp.what() << endl;
+        catch (const char* exp) {
+            cerr << exp << endl;
             return;
         }
 
@@ -214,12 +214,13 @@ column - номер колонки значения, которого мы хо�
         {
             if (row >= this->currentRows || row < 0 || column >= this->currentColumns || column < 0)
             {
-                throw "Error. Array element not found";
+                throw "Ошибка! Выход за пределы массива!";
             }
             result = this->matrix[row][column];
         }
-        catch (...)
+        catch (const char* exp)
         {
+            cerr << exp << endl;
             result = 0.0;
         }
 
@@ -247,11 +248,16 @@ column - номер колонки значения, которого мы хо�
         // Проверяет нет ли выхода за пределы массива
         try
         {
+            if (row >= this->currentRows || row < 0 || column >= this->currentColumns || column < 0)
+            {
+                throw "Ошибка! Выход за пределы массива!";
+            }
             this->matrix[row][column] = value;
             result = true;
         }
-        catch (...)
+        catch (const char* exp)
         {
+            cerr << exp << endl;
             result = false;
         }
         return result;
@@ -333,8 +339,11 @@ Matrix &operator+(Matrix &otherMatrix, double number)
 // Описание перегрузки оператора сложения двух матрицы
 Matrix &operator+(Matrix &firstMatrix, Matrix &secondMatrix)
 {
-    int rows = (firstMatrix.getCurrentRows() > secondMatrix.getCurrentRows()) ? firstMatrix.getCurrentRows() : secondMatrix.getCurrentRows();
-    int columns = (firstMatrix.getCurrentColumns() > secondMatrix.getCurrentColumns()) ? firstMatrix.getCurrentColumns() : secondMatrix.getCurrentColumns();
+    int rows = max(firstMatrix.getCurrentRows(), secondMatrix.getCurrentRows());
+    int columns = max(firstMatrix.getCurrentColumns(), secondMatrix.getCurrentColumns());
+
+    int minRows = min(firstMatrix.getCurrentRows(), secondMatrix.getCurrentRows());
+    int minColumns = min(firstMatrix.getCurrentColumns(), secondMatrix.getCurrentColumns());
 
     double **newArray = new double *[rows];
     for (int row = 0; row < rows; row++)
@@ -342,9 +351,9 @@ Matrix &operator+(Matrix &firstMatrix, Matrix &secondMatrix)
         newArray[row] = new double[columns];
     }
 
-    for (int row = 0; row < rows; row++)
+    for (int row = 0; row < minRows; row++)
     {
-        for (int column = 0; column < columns; column++)
+        for (int column = 0; column < minColumns; column++)
         {
             newArray[row][column] = firstMatrix.get(row, column) + secondMatrix.get(row, column);
         }
@@ -459,18 +468,22 @@ Matrix &operator*(Matrix &otherMatrix, double number)
 
 int main()
 {
+    setlocale(LC_ALL, "Russian");
     // Обяъвляем вещественное число b и задаем ему значение
     double b = 2.0;
     cout << "b = " << b << ';' << endl;
     
     // Обяъвляем экземпляр матрицы A и задаем ей значения
-    Matrix A(3, 2);
+    Matrix A(3, 3);
     A.set(4.0, 0, 0);
     A.set(2.0, 0, 1);
+    A.set(3.0, 0, 2);
     A.set(3.0, 1, 0);
     A.set(1.0, 1, 1);
+    A.set(4.0, 1, 2);
     A.set(1.0, 2, 0);
     A.set(1.0, 2, 1);
+    A.set(2.0, 2, 2);
     cout << "A =" << endl;
     A.print();
 
